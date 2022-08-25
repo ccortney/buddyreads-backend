@@ -1,0 +1,26 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://example.com/example.json",
+    "type": "object",
+    "properties": {
+      "bookId": {
+        "type": "string"
+      },
+      "createdBy": {
+        "type": "integer"
+      },
+      "buddy": {
+        "type": "integer"
+      },
+      "status": {
+        "type": "string"
+      }
+    },
+    "additionalProperties": false,
+    "required": [
+      "bookId",
+      "createdBy",
+      "buddy",
+      "status"    
+    ]
+  }
