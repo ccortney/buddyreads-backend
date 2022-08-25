@@ -1,0 +1,24 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://example.com/example.json",
+    "type": "object",
+    "properties": {
+      "buddyreadId": {
+        "type": "integer"
+      },
+      "userId": {
+        "type": "integer"
+      },
+      "progress": {
+        "type": "integer"
+      },
+      "rating": {
+        "type": "integer"
+      }
+    },
+    "additionalProperties": false,
+    "required": [
+      "buddyreadId",
+      "userId"   
+    ]
+  }
