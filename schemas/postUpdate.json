@@ -1,0 +1,21 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://example.com/example.json",
+    "type": "object",
+    "properties": {
+      "page": {
+        "type": "integer"
+      },
+      "message": {
+        "type": "string"
+      }, 
+      "viewed": {
+        "type": "boolean"
+      }, 
+      "liked": {
+        "type": "boolean"
+      }
+    },
+    "additionalProperties": false,
+    "required": []
+  }
