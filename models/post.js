@@ -90,7 +90,7 @@ class Post {
         FROM posts AS p
         INNER JOIN users AS u
         ON p.user_id = u.id
-        WHERE p.user_id = $1`, [post.user_id]);
+        WHERE p.user_id = $1`, [post.userId]);
 
     post.userId = userRes.rows[0]
 
@@ -104,7 +104,7 @@ class Post {
         FROM posts AS p
         INNER JOIN buddyreads AS br
         ON p.buddyread_id = br.id
-        WHERE p.buddyread_id = $1`, [post.buddyread_id]);
+        WHERE p.buddyread_id = $1`, [post.buddyreadId]);
 
     post.buddyreadId = buddyReadRes.rows[0]
 
