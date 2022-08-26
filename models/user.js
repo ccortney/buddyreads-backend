@@ -145,25 +145,38 @@ class User {
     if (!user) throw new NotFoundError(`No user: ${id}`);
 
     const userBuddyReadsRes = await db.query(
-          `SELECT br.id
-           FROM buddyreads AS br
-           WHERE br.created_by = $1`, [id]);
+        `SELECT 
+            br.id,
+            br.book_id AS "bookId", 
+            br.buddy, 
+            br.status
+        FROM buddyreads AS br
+        WHERE br.created_by = $1`, [id]);
 
-    user.buddyreads = userBuddyReadsRes.rows.map(br => br.id);
+    user.buddyreads = userBuddyReadsRes.rows;
 
     const userPostsRes = await db.query(
-        `SELECT p.id
+        `SELECT 
+            p.id, 
+            p.buddyread_id AS "buddyreadId", 
+            p.page, 
+            p.message, 
+            p.viewed, 
+            p.liked
          FROM posts AS p
          WHERE p.user_id = $1`, [id]);
 
-    user.posts = userPostsRes.rows.map(p => p.id);
+    user.posts = userPostsRes.rows
 
     const userBuddyReadStatsRes = await db.query(
-        `SELECT brs.user_id
+        `SELECT 
+            brs.buddyread_id AS "buddyreadId", 
+            brs.progress, 
+            brs.rating
         FROM buddyreadstats AS brs
         WHERE brs.user_id = $1`, [id]);
 
-    user.buddyreadstats = userBuddyReadStatsRes.rows.map(b => b.id);
+    user.buddyreadstats = userBuddyReadStatsRes.rows;
     return user;
   }
 
