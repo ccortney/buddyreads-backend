@@ -22,7 +22,7 @@ class BuddyRead {
             buddy,
             status
         ) VALUES ($1, $2, $3, $4)
-        RETURNING book_id AS "bookId", created_by AS "createdBy", buddy, status`,
+        RETURNING id, book_id AS "bookId", created_by AS "createdBy", buddy, status`,
         [bookId, createdBy, buddy, status]
     );
 
@@ -130,14 +130,15 @@ class BuddyRead {
     const querySql = `UPDATE buddyreads 
                       SET ${setCols} 
                       WHERE id = ${userIdVarIdx} 
-                      RETURNING book_id AS "bookId",
+                      RETURNING id, 
+                                book_id AS "bookId",
                                 created_by AS "createdBy",
                                 buddy, 
                                 status`;
     const result = await db.query(querySql, [...values, id]);
-    const buddyRead = result.rows[0];
+    const buddyread = result.rows[0];
 
-    if (!buddyread) throw new NotFoundError(`No buddyRead: ${id}`);
+    if (!buddyread) throw new NotFoundError(`No buddyread: ${id}`);
 
     return buddyread;
   }
