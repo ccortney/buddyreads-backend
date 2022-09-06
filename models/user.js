@@ -119,10 +119,7 @@ class User {
 
   /** Given an id, return data about user.
    *
-   * Returns { id, email, first_name, last_name, profile_picture, is_admin, buddyreads, buddyreadstats, posts }
-   *   where buddyreads is {id}
-   *   where buddies is {id}
-   *   where posts is {id}
+   * Returns { id, email, first_name, last_name, profile_picture, is_admin }
    *
    * Throws NotFoundError if user not found.
    **/
@@ -144,39 +141,6 @@ class User {
 
     if (!user) throw new NotFoundError(`No user: ${id}`);
 
-    const userBuddyReadsRes = await db.query(
-        `SELECT 
-            br.id,
-            br.book_id AS "bookId", 
-            br.buddy, 
-            br.status
-        FROM buddyreads AS br
-        WHERE br.created_by = $1`, [id]);
-
-    user.buddyreads = userBuddyReadsRes.rows;
-
-    const userPostsRes = await db.query(
-        `SELECT 
-            p.id, 
-            p.buddyread_id AS "buddyreadId", 
-            p.page, 
-            p.message, 
-            p.viewed, 
-            p.liked
-         FROM posts AS p
-         WHERE p.user_id = $1`, [id]);
-
-    user.posts = userPostsRes.rows
-
-    const userBuddyReadStatsRes = await db.query(
-        `SELECT 
-            brs.buddyread_id AS "buddyreadId", 
-            brs.progress, 
-            brs.rating
-        FROM buddyreadstats AS brs
-        WHERE brs.user_id = $1`, [id]);
-
-    user.buddyreadstats = userBuddyReadStatsRes.rows;
     return user;
   }
 
