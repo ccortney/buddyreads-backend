@@ -6,6 +6,9 @@
       "bookId": {
         "type": "string"
       },
+      "bookTitle": {
+        "type": "string"
+      },
       "createdBy": {
         "type": "integer"
       },
@@ -19,6 +22,7 @@
     "additionalProperties": false,
     "required": [
       "bookId",
+      "bookTitle",
       "createdBy",
       "buddy",
       "status"    
