@@ -1,7 +1,7 @@
 "use strict";
 
 const db = require("../db");
-const { sqlForPartialUpdate } = require("../helpers/sql");
+const { sqlForPartialUpdate, sqlForFilter } = require("../helpers/sql");
 const { NotFoundError } = require("../expressError");
 
 
@@ -32,27 +32,72 @@ class BuddyRead {
   /** Find all buddyreads.
    *
    * Returns [{ id, book_id, created_by, buddy, status }, ...]
+   *   where created_by is { id, first_name, last_name }
+   *   where buddy is { id, first_name, last_name }
    **/
 
-   static async findAll() {
-    const result = await db.query(
-          `SELECT id, 
-                  book_id AS "bookId",
-                  created_by AS "createdBy",
-                  buddy,
-                  status
-           FROM buddyreads
-           ORDER BY id`,
-    );
+   static async findAll(criteria={}) {
+      let filters = Object.keys(criteria);
 
-    return result.rows;
+      let whereStr = "";
+      let values = [];
+
+      if (filters.length > 0) {
+        ({whereStr, values} = sqlForFilter(criteria));
+
+        if (whereStr) {
+          whereStr = "WHERE " + whereStr;
+        }
+      }
+
+      const result = await db.query(
+            `SELECT id, 
+                    book_id AS "bookId",
+                    book_title AS "bookTitle",
+                    created_by AS "createdBy",
+                    buddy,
+                    status
+            FROM buddyreads
+            ${whereStr}
+            ORDER BY id`, 
+            values
+      );
+
+      for (let row of result.rows) {
+
+        const createdByRes = await db.query(
+            `SELECT
+                u.id,
+                u.first_name AS "firstName",
+                u.last_name AS "lastName"
+            FROM buddyreads AS br
+            INNER JOIN users AS u
+            ON br.created_by = u.id
+            WHERE br.created_by = $1`, [row.createdBy]);
+  
+        row.createdBy = createdByRes.rows[0]
+  
+        const buddyRes = await db.query(
+            `SELECT
+                u.id,
+                u.first_name AS "firstName",
+                u.last_name AS "lastName"
+            FROM buddyreads AS br
+            INNER JOIN users AS u
+            ON br.buddy = u.id
+            WHERE br.buddy = $1`, [row.buddy]);
+  
+        row.buddy = buddyRes.rows[0]
+      }
+
+      return result.rows;
   }
 
   /** Given an id, return data about buddyread.
    *
    * Returns { id, book_id, created_by, buddy, status }
-   *   where created_by is { id, first_name, last_name, email, profile_picture }
-   *   where buddy is { id, first_name, last_name, email, profile_picture }
+   *   where created_by is { id, first_name, last_name }
+   *   where buddy is { id, first_name, last_name }
    *
    * Throws NotFoundError if buddyread not found.
    **/
