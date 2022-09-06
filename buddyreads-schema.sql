@@ -11,7 +11,8 @@ CREATE TABLE users (
 
 CREATE TABLE buddyreads (
     id SERIAL PRIMARY KEY,
-    book_id TEXT NOT  NULL, 
+    book_id TEXT NOT NULL, 
+    book_title TEXT NOT NULL,
     created_by INTEGER 
         REFERENCES users ON DELETE CASCADE,
     buddy INTEGER 
