@@ -48,9 +48,9 @@ router.post("/", ensureLoggedIn, async function (req, res, next) {
  * Authorization required: admin
  **/
 
-router.get("/", ensureAdmin, async function (req, res, next) {
+router.get("/", ensureLoggedIn, async function (req, res, next) {
   try {
-    const buddyreads = await BuddyRead.findAll();
+    const buddyreads = await BuddyRead.findAll(req.query);
     return res.json({ buddyreads });
   } catch (err) {
     return next(err);
@@ -75,7 +75,6 @@ router.get("/:id", ensureLoggedIn, async function (req, res, next) {
     return next(err);
   }
 });
-
 
 /** PATCH /[id] { buddyRead } => { buddyRead }
  *
