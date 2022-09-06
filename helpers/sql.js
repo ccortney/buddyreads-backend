@@ -32,4 +32,30 @@ function sqlForPartialUpdate(dataToUpdate, jsToSql) {
   };
 }
 
-module.exports = { sqlForPartialUpdate };
+function sqlForFilter(criteria) {
+  const keys = Object.keys(criteria);
+
+  if (keys.length === 0) throw new BadRequestError("No filtering criteria");
+  
+  const criteriaStr = [];
+  const values = [];
+
+  let idx = 1;
+  if (criteria.buddy) {
+    criteriaStr.push(`buddy=$${idx}`);
+    idx++;
+    values.push(+criteria.buddy);
+  }
+
+  if (criteria.createdBy) {
+    criteriaStr.push(`created_by=$${idx}`);
+    idx++;
+    values.push(+criteria.createdBy);
+  }
+
+  return {
+    whereStr: criteriaStr.join(" AND "), values
+  }
+}
+
+module.exports = { sqlForPartialUpdate, sqlForFilter };
