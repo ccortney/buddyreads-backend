@@ -5,7 +5,6 @@ CREATE TABLE users (
     last_name TEXT NOT NULL,
     email TEXT UNIQUE NOT NULL
         CHECK (position('@' IN email) > 1),
-    profile_picture TEXT,
     is_admin BOOLEAN NOT NULL DEFAULT FALSE
 );
 

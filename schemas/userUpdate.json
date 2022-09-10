@@ -15,9 +15,6 @@
       "email": {
         "type": "string",
         "format": "email"
-      }, 
-      "profilePicture": {
-        "type": "string"
       }
     },
     "additionalProperties": false,
