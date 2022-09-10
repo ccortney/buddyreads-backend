@@ -19,7 +19,6 @@ async function commonBeforeAll() {
         lastName: "U1L",
         email: "user1@user.com",
         password: "password1",
-        profilePicture: "http://u1.img",
         isAdmin: false,
     });
     await User.register({
@@ -27,7 +26,6 @@ async function commonBeforeAll() {
         lastName: "U2L",
         email: "user2@user.com",
         password: "password2",
-        profilePicture: "http://u2.img",
         isAdmin: true,
     });
     await User.register({
@@ -35,7 +33,6 @@ async function commonBeforeAll() {
         lastName: "U3L",
         email: "user3@user.com",
         password: "password3",
-        profilePicture: "http://u3.img",
         isAdmin: false,
     });
     await db.query(`UPDATE users SET id = 1 WHERE email = 'user1@user.com'`);
@@ -44,19 +41,22 @@ async function commonBeforeAll() {
 
 
     await BuddyRead.create({
-        bookId: 'book1', 
+        bookId: 'book1',
+        bookTitle: 'booktitle 1', 
         createdBy: 1, 
         buddy: 2, 
         status: 'pending'
     });
     await BuddyRead.create({
         bookId: 'book2', 
+        bookTitle: 'booktitle 2', 
         createdBy: 1, 
         buddy: 3, 
         status: 'accepted'
     });
     await BuddyRead.create({
         bookId: 'book3', 
+        bookTitle: 'booktitle 3', 
         createdBy: 3, 
         buddy: 2, 
         status: 'rejected'

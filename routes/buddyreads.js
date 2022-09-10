@@ -20,7 +20,7 @@ const router = new express.Router();
  * Adds a new buddyread. 
  *
  * This returns the newly created buddyread 
- *  {buddyread: { id, bookId, createdBy, buddy, status }
+ *  {buddyread: { id, bookId, bookTitle, createdBy, buddy, status }
  *
  * Authorization required: ensureLoggedIn
  **/
@@ -41,7 +41,7 @@ router.post("/", ensureLoggedIn, async function (req, res, next) {
 });
 
 
-/** GET / => { buddyReads: [ {id, bookId, createdBy, buddy, status}, ... ] }
+/** GET / => { buddyReads: [ {id, bookId, bookTitle, createdBy, buddy, status}, ... ] }
  *
  * Returns list of all buddyreads.
  *
@@ -60,9 +60,9 @@ router.get("/", ensureLoggedIn, async function (req, res, next) {
 
 /** GET /[id] => { buddyread }
  *
- * Returns { id, bookId, createdBy, buddy, status }
- *   where createdBy is { id, firstName, lastName, email, profilePicture }
- *   where buddy is { id, firstName, lastName, email, profilePicture }
+ * Returns { id, bookId, bookTitle, createdBy, buddy, status }
+ *   where createdBy is { id, firstName, lastName, email }
+ *   where buddy is { id, firstName, lastName, email }
  *
  * Authorization required: ensureLoggedIn
  **/

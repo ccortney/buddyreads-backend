@@ -32,7 +32,6 @@ describe("POST /users", function () {
           firstName: "First-new",
           lastName: "Last-newL",
           password: "password-new",
-          profilePicture: "http://new.img",
           isAdmin: false,
         })
         .set("authorization", `Bearer ${u2Token}`);
@@ -44,7 +43,6 @@ describe("POST /users", function () {
         firstName: "First-new",
         lastName: "Last-newL",
         email: "new@email.com",
-        profilePicture: "http://new.img",
         isAdmin: false,
       }, token: expect.any(String),
     });
@@ -58,7 +56,6 @@ describe("POST /users", function () {
           firstName: "First-new",
           lastName: "Last-newL",
           password: "password-new",
-          profilePicture: "http://new.img",
           isAdmin: true,
         })
         .set("authorization", `Bearer ${u2Token}`);
@@ -69,7 +66,6 @@ describe("POST /users", function () {
         email: "new@email.com",
         firstName: "First-new",
         lastName: "Last-newL",
-        profilePicture: "http://new.img",
         isAdmin: true,
       }, token: expect.any(String),
     });
@@ -83,7 +79,6 @@ describe("POST /users", function () {
           firstName: "First-new",
           lastName: "Last-newL",
           password: "password-new",
-          profilePicture: "http://new.img",
           isAdmin: true,
         });
     expect(resp.statusCode).toEqual(401);
@@ -118,7 +113,7 @@ describe("POST /users", function () {
 /************************************** GET /users */
 
 describe("GET /users", function () {
-  test("works for admin", async function () {
+  test("works", async function () {
     const resp = await request(app)
         .get("/users")
         .set("authorization", `Bearer ${u2Token}`);
@@ -129,7 +124,6 @@ describe("GET /users", function () {
           firstName: "U1F",
           lastName: "U1L",
           email: "user1@user.com",
-          profilePicture: "http://u1.img",
           isAdmin: false,
         },
         {
@@ -137,7 +131,6 @@ describe("GET /users", function () {
           firstName: "U2F",
           lastName: "U2L",
           email: "user2@user.com",
-          profilePicture: "http://u2.img",
           isAdmin: true,
         },
         {
@@ -145,18 +138,10 @@ describe("GET /users", function () {
           firstName: "U3F",
           lastName: "U3L",
           email: "user3@user.com",
-          profilePicture: "http://u3.img",
           isAdmin: false,
         },
       ],
     });
-  });
-
-  test("does not work for users", async function () {
-    const resp = await request(app)
-        .get("/users")
-        .set("authorization", `Bearer ${u1Token}`);
-    expect(resp.statusCode).toEqual(401)
   });
 
   test("unauth for anon", async function () {
@@ -177,7 +162,7 @@ describe("GET /users", function () {
   });
 });
 
-/************************************** GET /users/:username */
+/************************************** GET /users/:id */
 
 describe("GET /users/:id", function () {
   test("works for the user", async function () {
@@ -190,96 +175,9 @@ describe("GET /users/:id", function () {
         firstName: "U1F",
         lastName: "U1L",
         email: "user1@user.com",
-        profilePicture: "http://u1.img",
-        isAdmin: false,
-        buddyreads: [
-          {
-            id: 1,
-            bookId: 'book1', 
-            buddy: 2, 
-            status: 'pending'
-          }, 
-          {
-            id: 2,
-            bookId: 'book2', 
-            buddy: 3, 
-            status: 'accepted'
-          }
-        ], 
-        buddyreadstats: [
-          {
-            buddyreadId: 1, 
-            progress: 25, 
-            rating: null
-          }
-        ],
-        posts: [
-          {
-            id: expect.any(Number),
-            buddyreadId: 1, 
-            page: 200, 
-            message: 'message1', 
-            viewed: false, 
-            liked: false
-          }
-        ]
+        isAdmin: false
       },
     });
-  });
-
-
-  test("works for admin", async function () {
-    const resp = await request(app)
-        .get(`/users/1`)
-        .set("authorization", `Bearer ${u2Token}`);
-    expect(resp.body).toEqual({
-      user: {
-        id: 1, 
-        firstName: "U1F",
-        lastName: "U1L",
-        email: "user1@user.com",
-        profilePicture: "http://u1.img",
-        isAdmin: false,
-        buddyreads: [
-          {
-            id: 1,
-            bookId: 'book1', 
-            buddy: 2, 
-            status: 'pending'
-          }, 
-          {
-            id: 2,
-            bookId: 'book2', 
-            buddy: 3, 
-            status: 'accepted'
-          }
-        ], 
-        buddyreadstats: [
-          {
-            buddyreadId: 1, 
-            progress: 25, 
-            rating: null
-          }
-        ],
-        posts: [
-          {
-            id: expect.any(Number),
-            buddyreadId: 1, 
-            page: 200, 
-            message: 'message1', 
-            viewed: false, 
-            liked: false
-          }
-        ]
-      },
-    });
-  });
-
-  test("does not work for other users", async function () {
-    const resp = await request(app)
-        .get(`/users/1`)
-        .set("authorization", `Bearer ${u3Token}`);
-        expect(resp.statusCode).toEqual(401);
   });
 
   test("unauth for anon", async function () {
@@ -312,7 +210,6 @@ describe("PATCH /users/:id", () => {
         firstName: "New",
         lastName: "U1L",
         email: "user1@user.com",
-        profilePicture: "http://u1.img",
         isAdmin: false,
       },
     });
@@ -331,7 +228,6 @@ describe("PATCH /users/:id", () => {
         firstName: "New",
         lastName: "U1L",
         email: "user1@user.com",
-        profilePicture: "http://u1.img",
         isAdmin: false,
       },
     });
@@ -389,7 +285,6 @@ describe("PATCH /users/:id", () => {
         firstName: "U1F",
         lastName: "U1L",
         email: "user1@user.com",
-        profilePicture: "http://u1.img",
         isAdmin: false,
       },
     });

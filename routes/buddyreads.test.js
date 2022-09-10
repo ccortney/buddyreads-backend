@@ -27,6 +27,7 @@ describe("POST /buddyreads", function () {
           .post("/buddyreads")
           .send({
             bookId: "new-book", 
+            bookTitle: "newbooktitle",
             createdBy: 1, 
             buddy: 2,
             status: "accepted"
@@ -37,6 +38,7 @@ describe("POST /buddyreads", function () {
         buddyread: {
           id: expect.any(Number),
           bookId: "new-book", 
+          bookTitle: "newbooktitle",
           createdBy: 1, 
           buddy: 2,
           status: "accepted"
@@ -49,6 +51,7 @@ describe("POST /buddyreads", function () {
         .post("/buddyreads")
         .send({
             bookId: "new-book", 
+            bookTitle: 'newbooktitle',
             createdBy: 1, 
             buddy: 2,
             status: "accepted"
@@ -71,6 +74,7 @@ describe("POST /buddyreads", function () {
         .post("/buddyreads")
         .send({
             bookId: 8, 
+            bookTitle: 'newbooktitle',
             createdBy: 1, 
             buddy: 2,
             status: "accepted"
@@ -83,7 +87,7 @@ describe("POST /buddyreads", function () {
 /************************************** GET /buddyreads */
 
 describe("GET /buddyreads", function () {
-  test("works for admin", async function () {
+  test("works", async function () {
     const resp = await request(app)
         .get("/buddyreads")
         .set("authorization", `Bearer ${u2Token}`);
@@ -92,33 +96,53 @@ describe("GET /buddyreads", function () {
         {
             id: 1, 
             bookId: 'book1', 
-            createdBy: 1, 
-            buddy: 2, 
+            bookTitle: 'booktitle 1',
+            createdBy: {
+              id: 1,
+              firstName: "U1F",
+              lastName: "U1L",
+          },  
+            buddy: {
+              id: 2,
+              firstName: "U2F",
+              lastName: "U2L",
+          }, 
             status: 'pending'
         },
         {
             id: 2,
             bookId: 'book2', 
-            createdBy: 1, 
-            buddy: 3, 
+            bookTitle: 'booktitle 2',
+            createdBy: {
+              id: 1,
+              firstName: "U1F",
+              lastName: "U1L",
+          },  
+            buddy: {
+              id: 3,
+              firstName: "U3F",
+              lastName: "U3L",
+          },  
             status: 'accepted'
         },
         {
             id: 3, 
-            bookId: 'book3', 
-            createdBy: 3, 
-            buddy: 2, 
+            bookId: 'book3',
+            bookTitle: 'booktitle 3',
+            createdBy: {
+              id: 3,
+              firstName: "U3F",
+              lastName: "U3L",
+          },  
+            buddy: {
+              id: 2,
+              firstName: "U2F",
+              lastName: "U2L",
+          },  
             status: 'rejected'
         },
       ],
     });
-  });
-
-  test("does not work for users", async function () {
-    const resp = await request(app)
-        .get("/buddyreads")
-        .set("authorization", `Bearer ${u1Token}`);
-    expect(resp.statusCode).toEqual(401)
   });
 
   test("unauth for anon", async function () {
@@ -150,19 +174,16 @@ describe("GET /buddyreads/:id", function () {
       buddyread: {
         id: 1, 
         bookId: 'book1', 
+        bookTitle: 'booktitle 1',
         createdBy: {
-            id: 1,
-            firstName: "U1F",
-            lastName: "U1L",
-            email: "user1@user.com",
-            profilePicture: "http://u1.img"
-        }, 
+          id: 1,
+          firstName: "U1F",
+          lastName: "U1L",
+      }, 
         buddy: {
             id: 2,
             firstName: "U2F",
             lastName: "U2L",
-            email: "user2@user.com",
-            profilePicture: "http://u2.img"
         }, 
         status: 'pending'
       },
@@ -197,6 +218,7 @@ describe("PATCH /buddyreads/:id", () => {
       buddyread: {
         id: 1, 
         bookId: 'book1', 
+        bookTitle: "booktitle 1",
         createdBy: 1, 
         buddy: 2, 
         status: 'accepted'

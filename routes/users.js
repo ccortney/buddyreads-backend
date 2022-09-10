@@ -22,7 +22,7 @@ const router = express.Router();
  * admin.
  *
  * This returns the newly created user and an authentication token for them:
- *  {user: { email, firstName, lastName, profilePicture, isAdmin }, token }
+ *  {user: { email, firstName, lastName, isAdmin }, token }
  *
  * Authorization required: admin
  **/
@@ -44,16 +44,16 @@ router.post("/", ensureAdmin, async function (req, res, next) {
 });
 
 
-/** GET / => { users: [ {email, firstName, lastName, profilePicture, isAdmin} }, ... ] }
+/** GET / => { users: [ {email, firstName, lastName, isAdmin} }, ... ] }
  *
  * Returns list of all users.
  *
- * Authorization required: admin
+ * Authorization required: logged in
  **/
 
-router.get("/", ensureAdmin, async function (req, res, next) {
+router.get("/", ensureLoggedIn, async function (req, res, next) {
   try {
-    const users = await User.findAll();
+    const users = await User.findAll(req.query);
     return res.json({ users });
   } catch (err) {
     return next(err);
@@ -63,12 +63,9 @@ router.get("/", ensureAdmin, async function (req, res, next) {
 
 /** GET /[id] => { user }
  *
- * Returns { email, firstName, lastName, isAdmin, buddyReads, buddies, posts }
- *   where buddyReads is { id, book_id, buddy, status }
- *   where buddies is { buddyread_id, progress, rating }
- *   where posts is { id, buddyread_id, page, message, viewed, liked}
+ * Returns { email, firstName, lastName, isAdmin }
  *
- * Authorization required: admin or same user-as-:id
+ * Authorization required: logged in
  **/
 
 router.get("/:id", ensureLoggedIn, async function (req, res, next) {
