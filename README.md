@@ -25,3 +25,8 @@ Node.js, Express, PostgreSQL
 
 ## Front End Repo
 https://github.com/ohmilla/buddyreads-frontend
+
+## Upcoming Features
+* Update and show progress
+* Create and show posts
+* Ensure responsive UI
