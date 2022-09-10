@@ -11,7 +11,7 @@ class BuddyRead {
 
   /** Create a new buddyread.
    *
-   * Returns { id, book_id, created_by, buddy, status }
+   * Returns { id, book_id, book_title, created_by, buddy, status }
    **/
 
   static async create({ bookId, bookTitle, createdBy, buddy, status }) {
@@ -32,7 +32,7 @@ class BuddyRead {
 
   /** Find all buddyreads.
    *
-   * Returns [{ id, book_id, created_by, buddy, status }, ...]
+   * Returns [{ id, book_id, book_title, created_by, buddy, status }, ...]
    *   where created_by is { id, first_name, last_name }
    *   where buddy is { id, first_name, last_name }
    **/
@@ -155,7 +155,7 @@ class BuddyRead {
    * Data can include:
    *   { status }
    *
-   * Returns { id, book_id, created_by, buddy, status }
+   * Returns { id, book_id, book_title, created_by, buddy, status }
    *
    * Throws NotFoundError if not found.
    */

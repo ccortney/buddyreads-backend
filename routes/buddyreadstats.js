@@ -61,10 +61,10 @@ router.get("/", ensureAdmin, async function (req, res, next) {
 /** GET /[buddyreadId, userId] => { buddyreadstat }
  *
  * Returns { buddyreadId, userId, progress, rating }
- *   where buddyreadId is { id, bookId, createdBy, buddy, status }
- *   where userId is { id, firstName, lastName, email, profilePicture }
+ *   where buddyreadId is { id, bookId, bookTitle, createdBy, buddy, status }
+ *   where userId is { id, firstName, lastName, email }
  *
- * Authorization required: eensureCorrectUserOrAdmin
+ * Authorization required: ensureCorrectUserOrAdmin
  **/
 
 router.get("/:buddyreadId/:id", ensureCorrectUserOrAdmin, async function (req, res, next) {

@@ -61,8 +61,8 @@ router.get("/", ensureAdmin, async function (req, res, next) {
 /** GET /[id] => { post }
  *
  * Returns { id, buddyreadId, userId, page, message, viewed, liked }
- *   where buddyreadId is { id, bookId, createdBy, buddy, status }
- *   where userId is { id, firstName, lastName, email, profilePicture }
+ *   where buddyreadId is { id, bookId, bookTitle, createdBy, buddy, status }
+ *   where userId is { id, firstName, lastName, email }
  *
  * Authorization required: ensureLoggedIn
  **/

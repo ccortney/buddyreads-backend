@@ -81,9 +81,9 @@ router.get("/:id", ensureLoggedIn, async function (req, res, next) {
 /** PATCH /[id] { user } => { user }
  *
  * Data can include:
- *   { firstName, lastName, password, email, profilePicture }
+ *   { firstName, lastName, password, email }
  *
- * Returns { firstName, lastName, email, profilePicture, isAdmin }
+ * Returns { firstName, lastName, email, isAdmin }
  *
  * Authorization required: admin or same-user-as-:id
  **/
