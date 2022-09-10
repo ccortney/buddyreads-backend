@@ -45,7 +45,7 @@ router.post("/", ensureLoggedIn, async function (req, res, next) {
  *
  * Returns list of all buddyreads.
  *
- * Authorization required: admin
+ * Authorization required: logged in
  **/
 
 router.get("/", ensureLoggedIn, async function (req, res, next) {
@@ -81,7 +81,7 @@ router.get("/:id", ensureLoggedIn, async function (req, res, next) {
  * Data can include:
  *   { status }
  *
- * Returns { id, bookId, createdBy, buddy, status }
+ * Returns { id, bookId, bookTitle, createdBy, buddy, status }
  *
  * Authorization required: ensureLoggedIn
  **/
