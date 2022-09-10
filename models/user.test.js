@@ -30,7 +30,6 @@ describe("authenticate", function () {
       firstName: "U1F",
       lastName: "U1L",
       email: "u1@email.com",
-      profilePicture: "http://u1.img",
       isAdmin: false
     });
   });
@@ -61,7 +60,6 @@ describe("register", function () {
     email: "test@test.com",
     firstName: "Test",
     lastName: "Tester",
-    profilePicture: "http://test.img",
     isAdmin: false,
   };
 
@@ -117,7 +115,6 @@ describe("findAll", function () {
         email: "u1@email.com",
         firstName: "U1F",
         lastName: "U1L",
-        profilePicture: "http://u1.img",
         isAdmin: false,
         id: expect.any(Number)
       },
@@ -125,7 +122,6 @@ describe("findAll", function () {
         email: "u2@email.com",
         firstName: "U2F",
         lastName: "U2L",
-        profilePicture: "http://u2.img",
         isAdmin: false,
         id: expect.any(Number)
       },
@@ -144,27 +140,7 @@ describe("get", function () {
         firstName: "U1F",
         lastName: "U1L",
         email: "u1@email.com",
-        profilePicture: "http://u1.img",
-        isAdmin: false,
-        buddyreads: [{
-            id: 1, 
-            bookId: 'book1', 
-            buddy: 2, 
-            status: 'pending'
-        }], 
-        buddyreadstats: [{
-            buddyreadId: 1, 
-            progress: 35, 
-            rating: null
-        }], 
-        posts: [{
-            id: 1,
-            buddyreadId: 1, 
-            page: 224, 
-            message: 'message1', 
-            viewed: true, 
-            liked: false
-      }]
+        isAdmin: false
     });
   });
 
@@ -193,7 +169,6 @@ describe("update", function () {
     let user = await User.update(1, updateData);
     expect(user).toEqual({
       id: 1,
-      profilePicture: "http://u1.img",
       ...updateData,
     });
   });
@@ -210,7 +185,6 @@ describe("update", function () {
         firstName: "U1F",
         lastName: "U1L",
         email: "u1@email.com",
-        profilePicture: "http://u1.img",
         isAdmin: false,
     });
     const found = await db.query("SELECT * FROM users WHERE id = 1");

@@ -23,7 +23,8 @@ afterAll(commonAfterAll);
 
 describe("create", function () {
     const newBuddyRead = {
-        bookId: 'newBook', 
+        bookId: 'newBook',
+        bookTitle: 'newBookTitle',
         createdBy: 1, 
         buddy: 2, 
         status: 'rejected'
@@ -57,16 +58,34 @@ describe("findAll", function () {
     expect(buddyreads).toEqual([
       {
         id: 1, 
-        bookId: 'book1', 
-        createdBy: 1, 
-        buddy: 2, 
+        bookId: 'book1',
+        bookTitle: 'booktitle 1', 
+        createdBy: {
+          id: 1, 
+          firstName: 'U1F', 
+          lastName: 'U1L'
+        }, 
+        buddy: {
+          id: 2, 
+          firstName: 'U2F', 
+          lastName: 'U2L'
+        },  
         status: 'pending'
       },
       {
         id: 2, 
-        bookId: 'book2', 
-        createdBy: 2, 
-        buddy: 1, 
+        bookId: 'book2',
+        bookTitle: 'booktitle 2', 
+        createdBy: {
+          id: 2, 
+          firstName: 'U2F', 
+          lastName: 'U2L'
+        }, 
+        buddy: {
+          id: 1, 
+          firstName: 'U1F', 
+          lastName: 'U1L'
+        }, 
         status: 'accepted'
       },
     ]);
@@ -82,19 +101,16 @@ describe("get", function () {
     expect(buddyread).toEqual({
         id: 1,
         bookId: 'book1', 
+        bookTitle: 'booktitle 1',
         createdBy: {
             id: 1, 
             firstName: "U1F",
             lastName: "U1L",
-            email: "u1@email.com",
-            profilePicture: "http://u1.img"
         }, 
         buddy: {
             id: 2, 
             firstName: "U2F",
             lastName: "U2L",
-            email: "u2@email.com",
-            profilePicture: "http://u2.img"
         }, 
         status: 'pending'
     });
@@ -123,6 +139,7 @@ describe("update", function () {
     expect(buddyread).toEqual({
         id: 1, 
         bookId: 'book1', 
+        bookTitle: 'booktitle 1',
         createdBy: 1, 
         buddy: 2, 
         ...updateData

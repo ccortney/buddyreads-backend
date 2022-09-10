@@ -2,7 +2,7 @@
 
 const db = require("../db");
 const bcrypt = require("bcrypt");
-const { sqlForPartialUpdate } = require("../helpers/sql");
+const { sqlForPartialUpdate, sqlForFilter } = require("../helpers/sql");
 const {
   NotFoundError,
   BadRequestError,
@@ -16,7 +16,7 @@ const { BCRYPT_WORK_FACTOR } = require("../config.js");
 class User {
   /** authenticate user with email, password.
    *
-   * Returns { id, email, first_name, last_name, profile_picture, is_admin }
+   * Returns { id, email, first_name, last_name, is_admin }
    *
    * Throws UnauthorizedError is user not found or wrong password.
    **/
@@ -29,7 +29,6 @@ class User {
                   first_name AS "firstName",
                   last_name AS "lastName",
                   email,
-                  profile_picture AS "profilePicture",
                   is_admin AS "isAdmin"
            FROM users
            WHERE email = $1`,
@@ -52,13 +51,13 @@ class User {
 
   /** Register user with data.
    *
-   * Returns { id, firstName, lastName, email, profilePicture, isAdmin }
+   * Returns { id, firstName, lastName, email, isAdmin }
    *
    * Throws BadRequestError on duplicates.
    **/
 
   static async register(
-      { email, password, firstName, lastName, profilePicture, isAdmin }) {
+      { email, password, firstName, lastName, isAdmin }) {
     const duplicateCheck = await db.query(
           `SELECT email
            FROM users
@@ -78,16 +77,14 @@ class User {
             password,
             first_name,
             last_name,
-            profile_picture,
             is_admin)
-           VALUES ($1, $2, $3, $4, $5, $6)
-           RETURNING id, email, first_name AS "firstName", last_name AS "lastName", profile_picture AS "profilePicture", is_admin AS "isAdmin"`,
+           VALUES ($1, $2, $3, $4, $5)
+           RETURNING id, email, first_name AS "firstName", last_name AS "lastName", is_admin AS "isAdmin"`,
         [
           email,
           hashedPassword,
           firstName,
           lastName,
-          profilePicture,
           isAdmin,
         ],
     );
@@ -99,19 +96,32 @@ class User {
 
   /** Find all users.
    *
-   * Returns [{ id, email, first_name, last_name, profile_picture, is_admin }, ...]
+   * Returns [{ id, email, first_name, last_name, is_admin }, ...]
    **/
 
-  static async findAll() {
+  static async findAll(criteria={}) {
+    let filters = Object.keys(criteria);
+
+    let whereStr = "";
+    let values = [];
+
+    if (filters.length > 0) {
+      ({whereStr, values} = sqlForFilter(criteria));
+
+      if (whereStr) {
+        whereStr = "WHERE " + whereStr;
+      }
+    }
     const result = await db.query(
           `SELECT id, 
                   email,
                   first_name AS "firstName",
                   last_name AS "lastName",
-                  profile_picture AS "profilePicture",
                   is_admin AS "isAdmin"
            FROM users
+           ${whereStr}
            ORDER BY id`,
+           values
     );
 
     return result.rows;
@@ -119,7 +129,7 @@ class User {
 
   /** Given an id, return data about user.
    *
-   * Returns { id, email, first_name, last_name, profile_picture, is_admin }
+   * Returns { id, email, first_name, last_name, is_admin }
    *
    * Throws NotFoundError if user not found.
    **/
@@ -130,7 +140,6 @@ class User {
                   email,
                   first_name AS "firstName",
                   last_name AS "lastName",
-                  profile_picture AS "profilePicture",
                   is_admin AS "isAdmin"
            FROM users
            WHERE id = $1`,
@@ -150,9 +159,9 @@ class User {
    * all the fields; this only changes provided ones.
    *
    * Data can include:
-   *   { firstName, lastName, password, profilePicture, isAdmin }
+   *   { firstName, lastName, password, isAdmin }
    *
-   * Returns { firstName, lastName, email, profilPicture, isAdmin }
+   * Returns { firstName, lastName, email, isAdmin }
    *
    * Throws NotFoundError if not found.
    *
@@ -182,7 +191,6 @@ class User {
                                 email,
                                 first_name AS "firstName",
                                 last_name AS "lastName",
-                                profile_picture AS "profilePicture",
                                 is_admin AS "isAdmin"`;
     const result = await db.query(querySql, [...values, id]);
     const user = result.rows[0];

@@ -15,10 +15,9 @@ async function commonBeforeAll() {
         INSERT INTO users(email,
                           password,
                           first_name,
-                          last_name,
-                          profile_picture)
-        VALUES  ('u1@email.com', $1, 'U1F', 'U1L', 'http://u1.img'),
-                ('u2@email.com', $2, 'U2F', 'U2L', 'http://u2.img')
+                          last_name)
+        VALUES  ('u1@email.com', $1, 'U1F', 'U1L'),
+                ('u2@email.com', $2, 'U2F', 'U2L')
         RETURNING id`,
         [
         await bcrypt.hash("password1", BCRYPT_WORK_FACTOR),
@@ -29,9 +28,9 @@ async function commonBeforeAll() {
     await db.query(`UPDATE users SET id = 2 WHERE email = 'u2@email.com'`)
 
     await db.query(`
-        INSERT INTO buddyreads(book_id, created_by, buddy, status)
-        VALUES  ('book1', 1, 2, 'pending'),
-                ('book2', 2, 1, 'accepted')`);
+        INSERT INTO buddyreads(book_id, book_title, created_by, buddy, status)
+        VALUES  ('book1', 'booktitle 1', 1, 2, 'pending'),
+                ('book2', 'booktitle 2', 2, 1, 'accepted')`);
 
     await db.query(`UPDATE buddyreads SET id = 1 WHERE book_id = 'book1'`)
     await db.query(`UPDATE buddyreads SET id = 2 WHERE book_id = 'book2'`)   

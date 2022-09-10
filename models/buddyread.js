@@ -14,16 +14,17 @@ class BuddyRead {
    * Returns { id, book_id, created_by, buddy, status }
    **/
 
-  static async create({ bookId, createdBy, buddy, status }) {
+  static async create({ bookId, bookTitle, createdBy, buddy, status }) {
     const result = await db.query(
         `INSERT INTO buddyreads (
             book_id,
+            book_title,
             created_by,
             buddy,
             status
-        ) VALUES ($1, $2, $3, $4)
-        RETURNING id, book_id AS "bookId", created_by AS "createdBy", buddy, status`,
-        [bookId, createdBy, buddy, status]
+        ) VALUES ($1, $2, $3, $4, $5)
+        RETURNING id, book_id AS "bookId", book_title AS "bookTitle", created_by AS "createdBy", buddy, status`,
+        [bookId, bookTitle, createdBy, buddy, status]
     );
 
     return result.rows[0];
@@ -95,7 +96,7 @@ class BuddyRead {
 
   /** Given an id, return data about buddyread.
    *
-   * Returns { id, book_id, created_by, buddy, status }
+   * Returns { id, book_id, book_title, created_by, buddy, status }
    *   where created_by is { id, first_name, last_name }
    *   where buddy is { id, first_name, last_name }
    *
@@ -106,6 +107,7 @@ class BuddyRead {
     const buddyReadRes = await db.query(
         `SELECT id, 
             book_id AS "bookId",
+            book_title AS "bookTitle",
             created_by AS "createdBy",
             buddy,
             status
@@ -121,10 +123,8 @@ class BuddyRead {
     const createdByRes = await db.query(
         `SELECT
             u.id,
-            u.email,
             u.first_name AS "firstName",
-            u.last_name AS "lastName",
-            u.profile_picture AS "profilePicture"
+            u.last_name AS "lastName"
         FROM buddyreads AS br
         INNER JOIN users AS u
         ON br.created_by = u.id
@@ -135,10 +135,8 @@ class BuddyRead {
     const buddyRes = await db.query(
         `SELECT
             u.id,
-            u.email,
             u.first_name AS "firstName",
-            u.last_name AS "lastName",
-            u.profile_picture AS "profilePicture"
+            u.last_name AS "lastName"
         FROM buddyreads AS br
         INNER JOIN users AS u
         ON br.buddy = u.id
@@ -168,6 +166,7 @@ class BuddyRead {
         data,
         {
           bookId: "book_id",
+          bookTitle: "book_title",
           createdBy: "created_by"
         });
     const userIdVarIdx = "$" + (values.length + 1);
@@ -177,6 +176,7 @@ class BuddyRead {
                       WHERE id = ${userIdVarIdx} 
                       RETURNING id, 
                                 book_id AS "bookId",
+                                book_title AS "bookTitle",
                                 created_by AS "createdBy",
                                 buddy, 
                                 status`;
