@@ -40,6 +40,7 @@ function sqlForFilter(criteria) {
   const criteriaStr = [];
   const values = [];
 
+
   let idx = 1;
   if (criteria.buddy) {
     criteriaStr.push(`buddy=$${idx}`);
@@ -53,8 +54,21 @@ function sqlForFilter(criteria) {
     values.push(+criteria.createdBy);
   }
 
-  return {
-    whereStr: criteriaStr.join(" AND "), values
+  if (criteria.email) {
+    criteriaStr.push(`email=$${idx}`);
+    idx++;
+    values.push(criteria.email);
+
+  }
+
+  if (criteria.buddy && criteria.createdBy) {
+    return {
+      whereStr: criteriaStr.join(" AND "), values
+    }
+  } else {
+    return {
+      whereStr: criteriaStr, values
+    }
   }
 }
 
