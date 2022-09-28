@@ -40,7 +40,6 @@ function sqlForFilter(criteria) {
   const criteriaStr = [];
   const values = [];
 
-
   let idx = 1;
   if (criteria.buddy) {
     criteriaStr.push(`buddy=$${idx}`);
@@ -58,7 +57,12 @@ function sqlForFilter(criteria) {
     criteriaStr.push(`email=$${idx}`);
     idx++;
     values.push(criteria.email);
+  }
 
+  if (criteria.buddyreadId) {
+    criteriaStr.push(`buddyread_id=$${idx}`);
+    idx++;
+    values.push(+criteria.buddyreadId);
   }
 
   if (criteria.buddy && criteria.createdBy) {
