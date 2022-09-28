@@ -45,11 +45,11 @@ class BuddyRead {
 
       if (filters.length > 0) {
         ({whereStr, values} = sqlForFilter(criteria));
-
         if (whereStr) {
           whereStr = "WHERE " + whereStr;
         }
       }
+      console.log('made it here')
 
       const result = await db.query(
             `SELECT id, 
@@ -63,6 +63,7 @@ class BuddyRead {
             ORDER BY id`, 
             values
       );
+
 
       for (let row of result.rows) {
 
