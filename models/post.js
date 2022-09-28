@@ -1,7 +1,7 @@
 "use strict";
 
 const db = require("../db");
-const { sqlForPartialUpdate } = require("../helpers/sql");
+const { sqlForPartialUpdate, sqlForFilter} = require("../helpers/sql");
 const { NotFoundError } = require("../expressError");
 
 
@@ -14,21 +14,34 @@ class Post {
    * Returns { id, buddyread_id, user_id, page, message, viewed, liked }
    **/
 
-  static async create({ id, buddyreadId, userId, page, message, viewed, liked  }) {
+  static async create({ buddyreadId, userId, page, message}) {
     const result = await db.query(
         `INSERT INTO posts (
             buddyread_id,
             user_id,
             page,
-            message, 
-            viewed, 
-            liked
-        ) VALUES ($1, $2, $3, $4, $5, $6)
+            message
+        ) VALUES ($1, $2, $3, $4)
         RETURNING id, buddyread_id AS "buddyreadId", user_id AS "userId", page, message, viewed, liked`,
-        [buddyreadId, userId, page, message, viewed, liked]
+        [buddyreadId, userId, page, message]
     );
 
-    return result.rows[0];
+    let post = result.rows[0]
+
+    const userRes = await db.query(
+      `SELECT
+          u.id,
+          u.first_name AS "firstName",
+          u.last_name AS "lastName"
+      FROM posts AS p
+      INNER JOIN users AS u
+      ON p.user_id = u.id
+      WHERE p.user_id = $1`, [post.userId]);
+    
+    post.user = userRes.rows[0];
+
+
+    return post;
   }
 
   /** Find all posts.
@@ -36,7 +49,19 @@ class Post {
    * Returns [{ id, buddyread_id, user_id, page, message, viewed, liked }, ...]
    **/
 
-   static async findAll() {
+   static async findAll(criteria={}) {
+    let filters = Object.keys(criteria);
+
+    let whereStr = "";
+    let values = [];
+
+    if (filters.length > 0) {
+      ({whereStr, values} = sqlForFilter(criteria));
+      if (whereStr) {
+        whereStr = "WHERE " + whereStr;
+      }
+    }
+
     const result = await db.query(
         `SELECT
             id,  
@@ -46,8 +71,25 @@ class Post {
             message, 
             viewed, liked
         FROM posts
-        ORDER BY id`,
+        ${whereStr}
+        ORDER BY page`,
+        values
     );
+
+    for (let row of result.rows) {
+
+      const userRes = await db.query(
+          `SELECT
+              u.id,
+              u.first_name AS "firstName",
+              u.last_name AS "lastName"
+          FROM posts AS p
+          INNER JOIN users AS u
+          ON p.user_id = u.id
+          WHERE p.user_id = $1`, [row.userId]);
+
+      row.user = userRes.rows[0]
+    }
 
     return result.rows;
   }
@@ -145,6 +187,19 @@ class Post {
     const post = result.rows[0];
 
     if (!post) throw new NotFoundError(`No post: ${id}`);
+
+    const userRes = await db.query(
+      `SELECT
+          u.id,
+          u.first_name AS "firstName",
+          u.last_name AS "lastName"
+      FROM posts AS p
+      INNER JOIN users AS u
+      ON p.user_id = u.id
+      WHERE p.user_id = $1`, [post.userId]);
+    
+    post.user = userRes.rows[0];
+
 
     return post;
   }
