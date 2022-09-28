@@ -33,7 +33,15 @@ describe("create", function () {
 
     test("works", async function () {
         let post = await Post.create(newPost);
-        expect(post).toEqual({...newPost, id: expect.any(Number)});
+        expect(post).toEqual({
+          ...newPost, 
+          id: expect.any(Number), 
+          user: {
+            id: 1, 
+            firstName: 'U1F', 
+            lastName: 'U1L'
+          }
+        });
         const found = await db.query(`
             SELECT * FROM posts
             WHERE   buddyread_id = 1 
@@ -67,7 +75,12 @@ describe("findAll", function () {
         page: 224, 
         message: "message1",
         viewed: true, 
-        liked: false
+        liked: false,
+        user: {
+          id: 1, 
+          firstName: 'U1F', 
+          lastName: 'U1L'
+        }
       },
       {
         id: 2,
@@ -76,7 +89,12 @@ describe("findAll", function () {
         page: 224, 
         message: "message2",
         viewed: false, 
-        liked: false
+        liked: false, 
+        user: {
+          id: 2, 
+          firstName: 'U2F', 
+          lastName: 'U2L'
+        }
       },
     ]);
   });
@@ -136,7 +154,12 @@ describe("update", function () {
         page: 224, 
         message: "message1",
         viewed: true, 
-        ...updateData
+        ...updateData, 
+        user: {
+          id: 1, 
+          firstName: 'U1F', 
+          lastName: 'U1L'
+        }
     });
   });
 
