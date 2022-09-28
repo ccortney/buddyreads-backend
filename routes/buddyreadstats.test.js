@@ -82,7 +82,7 @@ describe("POST /buddyreadstats", function () {
 /************************************** GET /buddyreadstats */
 
 describe("GET /buddyreadstats", function () {
-  test("works for admin", async function () {
+  test("works for logged in users", async function () {
     const resp = await request(app)
         .get("/buddyreadstats")
         .set("authorization", `Bearer ${u2Token}`);
@@ -116,13 +116,6 @@ describe("GET /buddyreadstats", function () {
     });
   });
 
-  test("does not work for users", async function () {
-    const resp = await request(app)
-        .get("/buddyreadstats")
-        .set("authorization", `Bearer ${u1Token}`);
-    expect(resp.statusCode).toEqual(401)
-  });
-
   test("unauth for anon", async function () {
     const resp = await request(app)
         .get("/buddyreadstats");
@@ -144,7 +137,7 @@ describe("GET /buddyreadstats", function () {
 /************************************** GET /buddyreadstats/:buddyreadId/:id */
 
 describe("GET /buddyreadstats/:buddyreadId/:id", function () {
-  test("works for the user", async function () {
+  test("works for logged in users", async function () {
     const resp = await request(app)
         .get(`/buddyreadstats/1/1`)
         .set("authorization", `Bearer ${u1Token}`);
@@ -156,27 +149,6 @@ describe("GET /buddyreadstats/:buddyreadId/:id", function () {
         rating: null
       },
     });
-  });
-
-  test("works for admin", async function () {
-    const resp = await request(app)
-        .get(`/buddyreadstats/1/1`)
-        .set("authorization", `Bearer ${u2Token}`);
-    expect(resp.body).toEqual({
-      buddyreadstat: {
-        buddyreadId: 1, 
-        userId: 1, 
-        progress: 25,
-        rating: null
-      },
-    });
-  });
-
-  test("does not work for other users", async function () {
-    const resp = await request(app)
-        .get(`/buddyreadstats/1/1`)
-        .set("authorization", `Bearer ${u3Token}`);
-    expect(resp.statusCode).toEqual(401);
   });
 
   test("unauth for anon", async function () {
@@ -203,7 +175,7 @@ describe("GET /buddyreadstats/:buddyreadId/:id", function () {
 /************************************** PATCH /buddyreadstats/:buddyreadId/:id */
 
 describe("PATCH /buddyreadstats/:buddyreadId/:id", () => {
-  test("works for the user", async function () {
+  test("works for logged in users", async function () {
     const resp = await request(app)
         .patch(`/buddyreadstats/1/1`)
         .send({
@@ -219,35 +191,6 @@ describe("PATCH /buddyreadstats/:buddyreadId/:id", () => {
         rating: 5
       },
     });
-  });
-
-  test("works for admin", async function () {
-    const resp = await request(app)
-        .patch(`/buddyreadstats/1/1`)
-        .send({
-          progress: 100, 
-          rating: 5
-        })
-        .set("authorization", `Bearer ${u2Token}`);
-    expect(resp.body).toEqual({
-      buddyreadstat: {
-        buddyreadId: 1, 
-        userId: 1, 
-        progress: 100,
-        rating: 5
-      },
-    });
-  });
-
-  test("does not work for other users", async function () {
-    const resp = await request(app)
-        .patch(`/buddyreadstats/1/1`)
-        .send({
-            progress: 100, 
-            rating: 5
-        })
-        .set("authorization", `Bearer ${u3Token}`);
-    expect(resp.statusCode).toEqual(401);
   });
 
   test("unauth for anon", async function () {

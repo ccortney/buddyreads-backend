@@ -43,7 +43,12 @@ describe("POST /posts", function () {
           page: 80,
           message: "message", 
           viewed: false, 
-          liked: false
+          liked: false, 
+          user: {
+            id: 1, 
+            firstName: 'U1F', 
+            lastName: 'U1L'
+          }
         }
       });
     });
@@ -91,7 +96,7 @@ describe("POST /posts", function () {
 /************************************** GET /posts */
 
 describe("GET /posts", function () {
-  test("works for admin", async function () {
+  test("works for logged in users", async function () {
     const resp = await request(app)
         .get("/posts")
         .set("authorization", `Bearer ${u2Token}`);
@@ -104,7 +109,12 @@ describe("GET /posts", function () {
             page: 200, 
             message: 'message1', 
             viewed: false, 
-            liked: false
+            liked: false, 
+            user: {
+              id: 1, 
+              firstName: 'U1F', 
+              lastName: 'U1L'
+            }
         },
         {
             id: 2, 
@@ -112,8 +122,13 @@ describe("GET /posts", function () {
             userId: 3, 
             page: 200, 
             message: 'message2', 
-            viewed: true, 
-            liked: false
+            viewed: false, 
+            liked: false,
+            user: {
+              id: 3, 
+              firstName: 'U3F', 
+              lastName: 'U3L'
+            }
         },
         {
             id: 3, 
@@ -121,18 +136,16 @@ describe("GET /posts", function () {
             userId: 2, 
             page: 200, 
             message: 'message3', 
-            viewed: true, 
-            liked: true
+            viewed: false, 
+            liked: false, 
+            user: {
+              id: 2, 
+              firstName: 'U2F', 
+              lastName: 'U2L'
+            }
         },
       ],
     });
-  });
-
-  test("does not work for users", async function () {
-    const resp = await request(app)
-        .get("/posts")
-        .set("authorization", `Bearer ${u1Token}`);
-    expect(resp.statusCode).toEqual(401)
   });
 
   test("unauth for anon", async function () {
@@ -216,7 +229,12 @@ describe("PATCH /posts/:id", () => {
             page: 200,
             message: "message1", 
             viewed: false, 
-            liked: true
+            liked: true, 
+            user: {
+              id: 1, 
+              firstName: 'U1F', 
+              lastName: 'U1L'
+            }
       },
     });
   });

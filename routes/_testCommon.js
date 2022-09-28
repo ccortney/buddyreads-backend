@@ -96,25 +96,19 @@ async function commonBeforeAll() {
         buddyreadId: 1, 
         userId: 1, 
         page: 200, 
-        message: 'message1', 
-        viewed: false, 
-        liked: false
+        message: 'message1'
     });
     await Post.create({
         buddyreadId: 2, 
         userId: 3, 
         page: 200, 
-        message: 'message2', 
-        viewed: true, 
-        liked: false
+        message: 'message2'
     });
     await Post.create({
         buddyreadId: 3, 
         userId: 2, 
         page: 200, 
-        message: 'message3', 
-        viewed: true, 
-        liked: true
+        message: 'message3'
     });
     await db.query(`UPDATE posts SET id = 1 WHERE 
                     buddyRead_id = 1 AND 
