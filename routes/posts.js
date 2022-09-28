@@ -45,12 +45,12 @@ router.post("/", ensureLoggedIn, async function (req, res, next) {
  *
  * Returns list of all posts.
  *
- * Authorization required: admin
+ * Authorization required: logged in
  **/
 
-router.get("/", ensureAdmin, async function (req, res, next) {
+router.get("/", ensureLoggedIn, async function (req, res, next) {
   try {
-    const posts = await Post.findAll();
+    const posts = await Post.findAll(req.query);
     return res.json({ posts });
   } catch (err) {
     return next(err);

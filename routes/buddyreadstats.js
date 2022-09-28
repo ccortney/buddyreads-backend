@@ -45,10 +45,10 @@ router.post("/", ensureLoggedIn, async function (req, res, next) {
  *
  * Returns list of all buddyreadstats.
  *
- * Authorization required: admin
+ * Authorization required: ensureLoggedIn
  **/
 
-router.get("/", ensureAdmin, async function (req, res, next) {
+router.get("/", ensureLoggedIn, async function (req, res, next) {
   try {
     const buddyreadstats = await BuddyReadStat.findAll();
     return res.json({ buddyreadstats });
@@ -64,12 +64,12 @@ router.get("/", ensureAdmin, async function (req, res, next) {
  *   where buddyreadId is { id, bookId, bookTitle, createdBy, buddy, status }
  *   where userId is { id, firstName, lastName, email }
  *
- * Authorization required: ensureCorrectUserOrAdmin
- **/
+ * Authorization required: ensureLoggedIn
+ **/ 
 
-router.get("/:buddyreadId/:id", ensureCorrectUserOrAdmin, async function (req, res, next) {
+router.get("/:buddyreadId/:id", ensureLoggedIn, async function (req, res, next) {
   try {
-    const buddyreadstat = await BuddyReadStat.get(req.params.buddyreadId, req.params.id, );
+    const buddyreadstat = await BuddyReadStat.get(req.params.buddyreadId, req.params.id );
     return res.json({ buddyreadstat });
   } catch (err) {
     return next(err);
@@ -84,10 +84,10 @@ router.get("/:buddyreadId/:id", ensureCorrectUserOrAdmin, async function (req, r
  *
  * Returns { buddyreadId, userId, progress, rating }
  *
- * Authorization required: ensureCorrectUserOrAdmin
+ * Authorization required: ensureLoggedIn
  **/
 
-router.patch("/:buddyreadId/:id", ensureCorrectUserOrAdmin, async function (req, res, next) {
+router.patch("/:buddyreadId/:id", ensureLoggedIn, async function (req, res, next) {
   try {
     const validator = jsonschema.validate(req.body, buddyreadStatsUpdateSchema);
     if (!validator.valid) {
