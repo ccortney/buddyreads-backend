@@ -88,7 +88,6 @@ class BuddyReadStat {
    */
 
   static async update(buddyreadId, userId, data) {
-
     const { setCols, values } = sqlForPartialUpdate(
         data,
         {
