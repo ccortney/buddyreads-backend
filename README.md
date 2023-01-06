@@ -1,7 +1,5 @@
 # buddyreads-backend
 
-This app is currently in progress.
-
 ## Overview
 BuddyReads is for friends that want buddy read a book. 
 This app allows users to track their progress and share their thoughts along the way. 
